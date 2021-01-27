@@ -25,7 +25,7 @@ img.onload = function(){
 
 function renderImageOnTriangles(imgData){
 
-    const density = 100;
+    const density = 50;
     
     const xTriangles = Math.floor(imgData.width/(density * (Math.sqrt(3)/2) )); //accounting for triangle width/height difference
     const yTriangles = Math.floor(imgData.height/density);
@@ -57,7 +57,7 @@ function renderImageOnTriangles(imgData){
 
     for(let i = 0; i < yTriangles; i++){
         for(let j = 0; j < xTriangles; j++){
-            //triangleArray[(offsetYt + i) * xTriangles + (offsetXt + j)].thickness = translatedValues[i * xTriangles + j] * 5;
+            triangleArray[(offsetYt + i) * xTriangles + (offsetXt + j)].thickness = translatedValues[i * xTriangles + j] * 5;
         }
     }
 }
