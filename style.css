@@ -39,8 +39,7 @@
     background: radial-gradient(#111111, #121212);
 }
 
-#width {
-    position: absolute;
+#title {
     margin: 100px;
     font-family: "Earthbound";
     font-size: 50px;
