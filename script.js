@@ -23,20 +23,39 @@ img.onload = function(){
     renderImageOnTriangles(imgData);
 }
 
-function renderImageOnTriangles(Data){
+function renderImageOnTriangles(imgData){
 
     const density = 40;
-    alert("image data received!");
-    const xTriangles = 300/(density/ (Math.sqrt(3)/2) ); //accounting for triangle width/height difference
-    const yTriangles = 240/density;
+    
+    const xTriangles = imgData.width/(density/ (Math.sqrt(3)/2) ); //accounting for triangle width/height difference
+    const yTriangles = imgData.height/density;
+
+    const offsetXt = 0;
+    const offsetYt = 0;
 
     var translatedValues = [];
 
-    var difference = 0;
+    for(let i = 0; i < yTriangles; i++){
+        for(let j = 0; j < xTriangles; j++){
+            translatedValues.push(0); //creating initial values for averages
+        }
+    }
+
+    for(let i = 0; i < imgData.height; i++){
+        for(let j = 0; j < imgData.width; j++){
+            let y = i % density;
+            let x = j % (density/ (Math.sqrt(3)/2));
+
+            let index = (i * imgData.width + j) * 4;
+            let avg = (imgData.data[index] + imgData.data[index + 1] + imgData.data[index + 2])/3/255;
+
+            translatedValues[y * xTriangles + x] += avg;
+        }
+    }
 
     for(let i = 0; i < yTriangles; i++){
         for(let j = 0; j < xTriangles; j++){
-            triangleArray[i * xTriangles + j + i*difference].thickness = translatedValues[i * xTriangles + j] * 5;
+            triangleArray[(offsetYt + i) * xTriangles + (offsetXt + j)].thickness = translatedValues[i * xTriangles + j] * 5;
         }
     }
 }
