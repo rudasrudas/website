@@ -13,7 +13,7 @@ img.src = "./cat.jpg";
 img.onload = function(){
     alert("Image loaded");
 }
-
+alert("test");
 function renderImageOnTriangles(){
 
     const xTriangles = 300/40;
