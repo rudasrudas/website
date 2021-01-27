@@ -1,0 +1,49 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+#header {
+    padding: 0px 30px;
+    display: flex;
+    flex-direction: row-reverse;
+    align-content: flex-end;
+}
+
+.menu-items {
+    color: white;
+    font-size: 15px;
+    text-align: center;
+    margin: 20px;
+    font-family: "Poppins";
+    text-transform: capitalize;
+    display: flex;
+    flex-direction: row;
+    
+}
+
+.landing-page {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(#111111, #121212);
+}
+
+#canvas1 {
+    top: 50px;
+    left: 0;
+    width: 100%;
+    background: radial-gradient(#111111, #121212);
+}
+
+#width {
+    position: absolute;
+    margin: 100px;
+    font-family: "Earthbound";
+    font-size: 50px;
+    text-align: center;
+    color: white;
+}
