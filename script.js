@@ -41,7 +41,7 @@ function renderImageOnTriangles(imgData){
         }
     }
 
-    alert("xT = " + xTriangles + " yT = " + yTriangles);
+    alert("xT = " + xTriangles + " yT = " + yTriangles + "\ntranslated Values = " + translatedValues.length);
 
     for(let i = 0; i < imgData.height; i++){
         for(let j = 0; j < imgData.width; j++){
@@ -160,7 +160,7 @@ function diluteTriangles(){
 
         if(mouse.radius > distance){
             if(triangleArray[i].thickness > 0.1)
-                triangleArray[i].thickness += 0.1;
+                triangleArray[i].thickness += 0.5;
             else triangleArray[i].thickness = 0.001;
         }
         else if(mouse.radius + 30 > distance){
