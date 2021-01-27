@@ -59,8 +59,8 @@ function renderImageOnTriangles(imgData){
     for(let i = 0; i < yTriangles; i++){
         for(let j = 0; j < xTriangles; j++){
             triangleArray[(offsetYt + i) * xTriangles + (offsetXt + j) + i*27].thickness = 
-                translatedValues[i * xTriangles + j]/(xDensity*yDensity) * 20;
-            console.log(translatedValues[i * xTriangles + j]/(xDensity*yDensity) * 20);
+                translatedValues[i * xTriangles + j]/(xDensity*yDensity) * 100;
+            console.log(triangleArray[(offsetYt + i) * xTriangles + (offsetXt + j) + i*27].thickness);
         }
     }
 }
