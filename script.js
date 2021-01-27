@@ -41,6 +41,8 @@ function renderImageOnTriangles(imgData){
         }
     }
 
+    alert("xT = " + xTriangles + " yT = " + yTriangles);
+
     for(let i = 0; i < imgData.height; i++){
         for(let j = 0; j < imgData.width; j++){
             let y = i % density;
@@ -55,7 +57,7 @@ function renderImageOnTriangles(imgData){
 
     for(let i = 0; i < yTriangles; i++){
         for(let j = 0; j < xTriangles; j++){
-            triangleArray[(offsetYt + i) * xTriangles + (offsetXt + j)].thickness = translatedValues[i * xTriangles + j] * 5;
+            //triangleArray[(offsetYt + i) * xTriangles + (offsetXt + j)].thickness = translatedValues[i * xTriangles + j] * 5;
         }
     }
 }
