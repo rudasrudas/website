@@ -25,10 +25,11 @@ img.onload = function(){
 
 function renderImageOnTriangles(imgData){
 
-    const density = 50;
+    const yDensity = 50;
+    const xDensity = yDensity / (Math.sqrt(3)/2);
     
-    const xTriangles = Math.floor(imgData.width/(density / (Math.sqrt(3)/2) )); //accounting for triangle width/height difference
-    const yTriangles = Math.floor(imgData.height/density);
+    const xTriangles = Math.floor(imgData.width/xDensity); //accounting for triangle width/height difference
+    const yTriangles = Math.floor(imgData.height/yDensity);
 
     const offsetXt = 0;
     const offsetYt = 0;
@@ -45,8 +46,8 @@ function renderImageOnTriangles(imgData){
 
     for(let i = 0; i < imgData.height; i++){
         for(let j = 0; j < imgData.width; j++){
-            let y = i % density;
-            let x = j % (density / (Math.sqrt(3)/2));
+            let y = i % yDensity;
+            let x = j % xDensity;
 
             let index = (i * imgData.width + j) * 4;
             let avg = (imgData.data[index] + imgData.data[index + 1] + imgData.data[index + 2])/3/255;
@@ -57,7 +58,8 @@ function renderImageOnTriangles(imgData){
 
     for(let i = 0; i < yTriangles; i++){
         for(let j = 0; j < xTriangles; j++){
-            triangleArray[(offsetYt + i) * xTriangles + (offsetXt + j)].thickness = translatedValues[i * xTriangles + j] * 5;
+            triangleArray[(offsetYt + i) * xTriangles + (offsetXt + j)].thickness = 
+                translatedValues[i * xTriangles + j]/(xDensity * yDensity) * 5;
         }
     }
 }
