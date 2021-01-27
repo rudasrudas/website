@@ -27,7 +27,7 @@ function renderImageOnTriangles(imgData){
 
     const density = 50;
     
-    const xTriangles = Math.floor(imgData.width/(density * (Math.sqrt(3)/2) )); //accounting for triangle width/height difference
+    const xTriangles = Math.floor(imgData.width/(density / (Math.sqrt(3)/2) )); //accounting for triangle width/height difference
     const yTriangles = Math.floor(imgData.height/density);
 
     const offsetXt = 0;
@@ -46,7 +46,7 @@ function renderImageOnTriangles(imgData){
     for(let i = 0; i < imgData.height; i++){
         for(let j = 0; j < imgData.width; j++){
             let y = i % density;
-            let x = j % (density/ (Math.sqrt(3)/2));
+            let x = j % (density / (Math.sqrt(3)/2));
 
             let index = (i * imgData.width + j) * 4;
             let avg = (imgData.data[index] + imgData.data[index + 1] + imgData.data[index + 2])/3/255;
@@ -186,8 +186,6 @@ function init(){
             triangleArray.push(new Triangle(x, y, sideLength, thickness));
         }
     }
-
-    //renderImageOnTriangles();
 }
 
 function animate(){
@@ -195,7 +193,7 @@ function animate(){
     ctx.clearRect(0, 0, innerWidth, innerHeight);
 
     for(let i = 0; i < triangleArray.length; i++){
-        triangleArray[i].update();
+        //triangleArray[i].update();
         if(i%2 == 0)
             triangleArray[i].drawFlipped();
         else triangleArray[i].draw();
