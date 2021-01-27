@@ -11,15 +11,26 @@ let triangleArray;
 var img = new Image();
 img.src = "./cat.jpg";
 img.onload = function(){
-    alert("Image loaded");
+    var imgCanvas = document.createElement("canvas");
+    imgCanvas.width = img.width;
+    imgCanvas.height = img.height;
+    var imgCtx = imgCanvas.getContext('2d');
+
+    imgCtx.drawImage(img, 0, 0);
+
+    var imgData = imgCtx.getImageData(0, 0, img.width, img.height);
+
+    renderImageOnTriangles(imgData);
 }
-alert("test");
-function renderImageOnTriangles(){
 
-    const xTriangles = 300/40;
-    const yTriangles = 240/40;
+function renderImageOnTriangles(Data){
 
-    var translatedValues = [0.42277450980392267, 0.791585784313726, 0.9440465686274742, 0.965365196078452, 0.9568455882353077, 0.7234926470588221, 0.3632107843137253, 0.5144093137254904, 0.7925833333333291, 0.8938578431372438, 0.8713553921568666, 0.7133357843137231, 0.8959436274509954, 0.2308627450980403, 0.3909632352941185, 0.58401225490196, 0.785426470588236, 0.9529754901961011, 0.9501127450980552, 0.9598137254902162, 0.2505588235294126, 0.12707598039215884, 0.7893921568627392, 0.8437965686274493, 0.8992818627451036, 0.9468921568627573, 0.9412843137255084, 0.350808823529412, 0.17780147058823684, 0.31249754901960825, 0.814786764705882, 0.8138480392156855, 0.9227205882353126, 0.7445759803921532, 0.3982450980392155, 0.29239460784313737, 0.028727941176470775, 0.240419117647061, 0.7657426470588184, 0.8528063725490397, 0.33519362745098114, 0.4210588235294124];
+    const density = 40;
+    alert("image data received!");
+    const xTriangles = 300/(density/ (Math.sqrt(3)/2) ); //accounting for triangle width/height difference
+    const yTriangles = 240/density;
+
+    var translatedValues = [];
 
     var difference = 0;
 
