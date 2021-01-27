@@ -38,7 +38,7 @@ function renderImageOnTriangles(imgData){
 
     for(let i = 0; i < yTriangles; i++){
         for(let j = 0; j < xTriangles; j++){
-            translatedValues.push(1); //creating initial values for averages
+            translatedValues.push(0); //creating initial values for averages
         }
     }
 
@@ -52,7 +52,7 @@ function renderImageOnTriangles(imgData){
             let index = (i * imgData.width + j) * 4;
             let avg = (imgData.data[index] + imgData.data[index + 1] + imgData.data[index + 2])/3/255;
 
-            translatedValues[y * xTriangles + x] *= avg;
+            translatedValues[y * xTriangles + x] += avg;
         }
     }
 
