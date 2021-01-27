@@ -26,7 +26,7 @@ img.onload = function(){
 function renderImageOnTriangles(imgData){
 
     const yDensity = 50;
-    const xDensity = yDensity / (Math.sqrt(3)/2);
+    const xDensity = yDensity;// / (Math.sqrt(3)/2);
     
     const xTriangles = Math.floor(imgData.width/xDensity); //accounting for triangle width/height difference
     const yTriangles = Math.floor(imgData.height/yDensity);
