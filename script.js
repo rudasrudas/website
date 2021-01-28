@@ -151,7 +151,7 @@ class Triangle {
         }
 
         if(this.thickness > baseThickness){
-            this.thickness -= 0.1;
+            //this.thickness -= 0.1;
         }
     }
 }
@@ -197,7 +197,7 @@ function animate(){
     ctx.clearRect(0, 0, innerWidth, innerHeight);
 
     for(let i = 0; i < triangleArray.length; i++){
-        //triangleArray[i].update();
+        triangleArray[i].update();
         if(i%2 == 0)
             triangleArray[i].drawFlipped();
         else triangleArray[i].draw();
