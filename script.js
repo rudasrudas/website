@@ -36,13 +36,13 @@ function renderImageOnTriangles(imgData){
 
     var translatedValues = [];
 
+    var difference = ( canvas.width - gap * 5) / (Math.sqrt(3)/2 *allSideLength) - xTriangles;
+
     for(let i = 0; i < yTriangles; i++){
         for(let j = 0; j < xTriangles; j++){
             translatedValues.push(0); //creating initial values for averages
         }
     }
-
-    alert("xT = " + xTriangles + " yT = " + yTriangles + "\ntranslated Values = " + translatedValues.length);
 
     for(let i = 0; i < imgData.height; i++){
         for(let j = 0; j < imgData.width; j++){
@@ -58,7 +58,7 @@ function renderImageOnTriangles(imgData){
 
     for(let i = 0; i < yTriangles; i++){
         for(let j = 0; j < xTriangles; j++){
-            triangleArray[(offsetYt + i) * xTriangles + (offsetXt + j) + i*27].thickness = 
+            triangleArray[(offsetYt + i) * xTriangles + (offsetXt + j) + i*difference].thickness = 
                 translatedValues[i * xTriangles + j]/(xDensity*yDensity) * 100;
             console.log(triangleArray[(offsetYt + i) * xTriangles + (offsetXt + j) + i*27].thickness);
         }
