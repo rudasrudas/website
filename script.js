@@ -151,7 +151,7 @@ class Triangle {
         }
 
         if(this.thickness > baseThickness){
-            //this.thickness -= 0.1;
+            this.thickness -= 0.1;
         }
     }
 }
