@@ -37,6 +37,7 @@ function renderImageOnTriangles(imgData){
     var translatedValues = [];
 
     var difference = ( canvas.width - gap * 5) / (Math.sqrt(3)/2 *allSideLength) - xTriangles;
+    difference = 13;
 
     for(let i = 0; i < yTriangles; i++){
         for(let j = 0; j < xTriangles; j++){
@@ -59,7 +60,7 @@ function renderImageOnTriangles(imgData){
     for(let i = 0; i < yTriangles; i++){
         for(let j = 0; j < xTriangles; j++){
             triangleArray[(offsetYt + i) * xTriangles + (offsetXt + j) + i*difference].thickness = 
-                translatedValues[i * xTriangles + j]/(xDensity*yDensity) * 100;
+                translatedValues[i * xTriangles + j]/(xDensity*yDensity) * 20;
             console.log(triangleArray[(offsetYt + i) * xTriangles + (offsetXt + j) + i*27].thickness);
         }
     }
