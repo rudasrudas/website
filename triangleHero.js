@@ -235,6 +235,7 @@ function animate(){
 
 init();
 console.log("There are " + triangleMatrix.length + " triangles created. \n xT = " + xT + " yT = " + yT);
+console.log("canvas dims: " + canvas.width + ";" + canvas.height);
 animate();
 
 
