@@ -210,6 +210,8 @@ function init(){
     canvas.width = screen.width - paddingLeft - paddingRight;
     canvas.height = screen.height - paddingTop - paddingBottom;
 
+    console.log(canvas.width + "x" + canvas.height); //Logging
+
     //TODO(justas): calculate the number of triangles needed based on the density and the canvas dimensions.
     sideLength = canvas.width*canvas.width / 600; // numOfPixelsOnCanvas / numOfTriangles
 
@@ -231,8 +233,7 @@ function init(){
 function animate(){
     requestAnimationFrame(animate);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    console.log(canvas.width + "x" + canvas.height); //Logging
-
+    
     triangleMatrix.forEach(function(t, i) {
         t.update();
         t.render(i);
