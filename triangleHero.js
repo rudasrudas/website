@@ -10,9 +10,9 @@ End date: In progress
 
 Expected features:
  [X] Displayed in a hexagonal pattern and not square
- [X] Have margins on all sides
- [ ] Adapt triangle size based on the density value
  [X] Disappear if clicked as a ripple
+ [ ] Have margins on all sides
+ [ ] Adapt triangle size based on the density value
  [ ] Disappear/reapper on scroll
  [ ] Responsive to mouse hovering effects
  [ ] Display a picture or a video with value customization
@@ -39,16 +39,13 @@ const paddingBottom = 0;
 const paddingLeft = 0;
 const paddingRight = 0; //TODO convert into a struct istead
 
-//The speed at which the triangles will reach their target thickness
-//NOTE(justas): The bigger the value, the less accurate triangle
-//thickness is going to be.
-const refreshSpeed = 0.5;
-const rippleSpeed = 20; //The speed at which the ripples move away from their source in px
+const refreshSpeed = 0.1; //Speed at whcih the triangles reach their targetThickness (Keep as low as possible for accuracy)
+const rippleSpeed = 5; //The speed at which the ripples move away from their source in px per 10 ms
 
-const defaultTargetThickness = 2; //The default target thickness for all triangles in px
+const defaultTargetThickness = 1; //The default target thickness for all triangles in px
 const defaultTriangleColor = '#555555'; //The default color for triangles.
-const borderRadius = 0; //triangle border radius
-const inset = 5; //The inset/padding for each triangle in px
+const borderRadius = 5; //triangle border radius
+const inset = 10; //The inset/padding for each triangle in px
 
 //VARIABLES
 var canvas = document.getElementById(elementId);
@@ -79,24 +76,16 @@ class Ripple {
         this.radius = 0;
     }
 
-    //returns whether a triangle within the radius of this ripple
-    inRange(triangle){
-        //Accounting for the triangle coordinates
-        // being at the edge of the triangle and centering them
-        let tX = triangle.x + (sideLength/2);
-        let tY = triangle.y + (sideLength*Math.sqrt(3)/6);
+    expand(){
+        return new Promise(resolve =>
+            setInterval(() => {
+                this.radius += rippleSpeed;
 
-        return (this.radius >= Math.sqrt((tX - this.x)*(tX - this.x) + (tY - this.y)*(tY - this.y)));
-    }
-
-    update(){
-        if(this.radius < maximumDistance){
-            this.radius += rippleSpeed;
-        }
-        else{
-            ripples.pop(this); //Delete the ripple if it is irrelevant
-            //TODO(justas): Destruct this instance here to increase performance.
-        }
+                if(this.radius > maximumDistance){
+                    resolve();
+                }
+            }, 10)
+        );
     }
 }
 
@@ -119,17 +108,8 @@ class Triangle {
         let trX = Math.floor(i % xT);
         let trY = Math.floor(i / xT);
 
-        console.log("drawing the " + i + "th triangle. [" + trX + ";" + trY + "]");
-
         ctx.lineWidth = this.thickness;
         ctx.strokeStyle = this.color;
-
-        // if((trY*xT)%2 === 0){ //draw flipped (pointing up)
-        //     //path.moveTo(this.x + (3/Math.sqrt(3)*inset), 0);
-        // }
-        // else{ //draw unflipped (pointing down)
-        //     ctx.stroke(this.renderDown());
-        // }
 
         if(xT%2 === 0){
             if(trX%2 === 0){
@@ -159,51 +139,61 @@ class Triangle {
         }
     }
 
-    renderDown(){
+    renderDown(){ //Render the triangle pointing down
         let path = new Path2D();
 
-        path.moveTo(this.x + Math.sqrt(3)*borderRadius + (3/Math.sqrt(3)*inset),
+        path.moveTo(this.x + 3/Math.sqrt(3)*inset + Math.sqrt(3)*borderRadius,
                     this.y + inset);
 
-        path.arcTo( this.x + sideLength - (3/Math.sqrt(3)*inset), this.y + inset,
-                    this.x + sideLength - (3/Math.sqrt(3)*inset) - borderRadius, this.y + inset + 2*Math.sqrt(3)*borderRadius,
+        path.arcTo( this.x + sideLength - 3/Math.sqrt(3)*inset, this.y + inset,
+                    this.x + sideLength - 3/Math.sqrt(3)*inset - Math.sqrt(3)*borderRadius, this.y + inset + 3*borderRadius,
                     borderRadius);
         path.arcTo( this.x + sideLength/2, this.y + Math.sqrt(3)*sideLength/2 - 2*inset,
-                    this.x + sideLength/2 - borderRadius, this.y + Math.sqrt(3)*sideLength/2 - 2*inset - 2*Math.sqrt(3)*borderRadius,
+                    this.x + sideLength/2 - Math.sqrt(3)*borderRadius, this.y + Math.sqrt(3)/2*sideLength - 2*inset - 3*borderRadius,
                     borderRadius);
-        path.arcTo( this.x + (3/Math.sqrt(3)*inset), this.y + inset,
-                    this.x + Math.sqrt(3)*borderRadius + (3/Math.sqrt(3)*inset), this.y + inset,
+        path.arcTo( this.x + 3/Math.sqrt(3)*inset, this.y + inset,
+                    this.x + 3/Math.sqrt(3)*inset + Math.sqrt(3)*borderRadius, this.y + inset,
                     borderRadius);
 
         return path;
     }
 
-    renderUp(){
+    renderUp(){ //Render the triangle pointing up
         let path = new Path2D();
 
-        path.moveTo(this.x + (3/Math.sqrt(3)*inset) + borderRadius,
-                    this.y + Math.sqrt(3)*sideLength/2 - inset - 2*Math.sqrt(3)*borderRadius);
+        path.moveTo(this.x + 3/Math.sqrt(3)*inset + Math.sqrt(3)/2*borderRadius,
+                    this.y + Math.sqrt(3)/2*sideLength - inset - 3/2*borderRadius);
 
         path.arcTo( this.x + sideLength/2, this.y + 2*inset,
-                    this.x + sideLength/2 + borderRadius, this.y + 2*inset + 2*Math.sqrt(3)*borderRadius,
+                    this.x + sideLength/2 + Math.sqrt(3)*borderRadius, this.y + 2*inset + 3*borderRadius,
                     borderRadius);
-        path.arcTo( this.x + sideLength - (3/Math.sqrt(3)*inset), this.y + Math.sqrt(3)*sideLength/2 - inset,
-                    this.x + sideLength - (3/Math.sqrt(3)*inset) - 2*Math.sqrt(3)*borderRadius, this.y + Math.sqrt(3)*sideLength/2 - inset,
+        path.arcTo( this.x + sideLength - 3/Math.sqrt(3)*inset, this.y + Math.sqrt(3)*sideLength/2 - inset,
+                    this.x + sideLength - 3/Math.sqrt(3)*inset - 2*Math.sqrt(3)*borderRadius, this.y + Math.sqrt(3)*sideLength/2 - inset,
                     borderRadius);
-        path.arcTo( this.x + (3/Math.sqrt(3)*inset), this.y + Math.sqrt(3)*sideLength/2 - inset,
-                    this.x + (3/Math.sqrt(3)*inset) + borderRadius, this.y + Math.sqrt(3)*sideLength/2 - inset - 2*Math.sqrt(3)*borderRadius,
+        path.arcTo( this.x + 3/Math.sqrt(3)*inset, this.y + Math.sqrt(3)*sideLength/2 - inset,
+                    this.x + 3/Math.sqrt(3)*inset + Math.sqrt(3)/2*borderRadius, this.y + Math.sqrt(3)/2*sideLength - inset - 3/2*borderRadius,
                     borderRadius);
 
         return path;
+    }
+
+    //returns whether a triangle within the radius of this ripple
+    inRange(r){
+        //Accounting for the triangle coordinates
+        // being at the edge of the triangle and centering them
+        let tX = this.x + (sideLength/2);
+        let tY = this.y + (sideLength*Math.sqrt(3)/6); //TODO(justas): Recheck if this is accurate
+
+        return (r.radius >= Math.sqrt((tX - r.x)*(tX - r.x) + (tY - r.y)*(tY - r.y)));
     }
 
     update(){
-        //Iterating trough every ripple and making the triangles disappear
-        ripples.forEach(function(r) {
-            if(r.inRange(this)){
-                this.targetThickness = 0.001; //TODO(justas): A super small value or just 0?
+        //Iterating trough every ripple and making the triangles fade
+        for(let i = 0; i < ripples.length; i++){
+            if(this.inRange(ripples[i])){
+                this.targetThickness = 0.0001; //TODO(justas): A super small value or just 0?
             }
-        });
+        }
 
         //TODO(justas): Update the opacity(or just the thickness?)
         // based on the scrolled position.
@@ -235,10 +225,15 @@ window.addEventListener('mousemove',
 );
 
 window.addEventListener('mousedown',
-    function(event){
-        //NOTE(justas): Only capture clicks on the hero
+    async function(event){
+        //Only capture clicks on the hero
         if(event.target.id === elementId){
-            ripples.push(new Ripple(event.offsetX, event.offsetY));
+            let r = new Ripple(event.offsetX, event.offsetY);
+
+            ripples.push(r);
+            await r.expand();
+
+            ripples.pop(r);
         }
     }
 );
@@ -277,12 +272,8 @@ function animate(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     triangleMatrix.forEach(function(t, i) {
-        //t.update();
+        t.update();
         t.render(i);
-    });
-
-    ripples.forEach(function(r) {
-        r.update();
     });
 }
 
