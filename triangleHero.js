@@ -213,10 +213,10 @@ function animate(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     console.log(canvas.width + "x" + canvas.height);
 
-    triangleMatrix.forEach(function(t) {
-        t.update();
-        t.draw();
-    });
+    for(let i = 0; i < triangleMatrix.length; i++){}
+        triangleMatrix[i].update();
+        triangleMatrix[i].draw();
+    }
 
     ripples.forEach(function(r) {
         r.update();
