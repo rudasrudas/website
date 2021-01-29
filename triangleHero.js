@@ -25,32 +25,21 @@ Expected features:
 
  */
 
- //VARIABLES
+ //CONSTANTS
 
 const elementId = "canvas1";
-var canvas = document.getElementById(elementId);
-var ctx = canvas.getContext("2d");
-
-var canvasWidth;
-var canvasHeight;
 
 //The variable that determines how dense the triangle hero section will be
-const triangleDensity = 20;
+//NOTE(justas): Not used yet and instead relying on canvas dimensions and sidelength to determine the density
+const triangleDensity = 20; 
 
 //The padding around the hero section in px.
 const paddingTop = 0;
 const paddingBottom = 0;
 const paddingLeft = 0;
-const paddingRight = 0;
+const paddingRight = 0; //TODO convert into a struct istead
 
-const inset = 5; //The inset/padding for each triangle in px
 
-//The triangle matrix, as a one dimensional array
-var triangleMatrix;
-
-var xT; //Triangle amount in x axis
-var yT; //Triangle amount in y axis
-var sideLength; //The length of each side of the triangles
 
 //The speed at which the triangles will reach their target thickness
 //NOTE(justas): The bigger the value, the less accurate triangle
@@ -60,6 +49,19 @@ const rippleSpeed = 20; //The speed at which the ripples move away from their so
 
 const defaultTargetThickness = 2; //The default target thickness for all triangles in px
 const defaultTriangleColor = "#555555"; //The default color for triangles.
+const borderRadius = 5; //triangle border radius
+const inset = 5; //The inset/padding for each triangle in px
+
+//VARIABLES
+var canvas = document.getElementById(elementId);
+var ctx = canvas.getContext("2d");
+
+var triangleMatrix; //The triangle matrix, as a one dimensional array
+var ripples; //The ripple array
+
+var xT; //Triangle amount in x axis
+var yT; //Triangle amount in y axis
+var sideLength; //The length of each side of the triangles
 
 //Mouse data
 var mouse = {
@@ -72,11 +74,6 @@ var mouse = {
 //used to ensure good performance
 const maximumDistance = Math.sqrt((screen.width*screen.width)+(screen.height*screen.height));
 
-//The ripple array
-var ripples;
-
-//TODO(justas): Perhaps a mouse click array should be introduced
-// to allow fully responsive clicking experience?
 class Ripple {
     constructor(x, y, radius){
         this.x = x;
@@ -86,10 +83,13 @@ class Ripple {
 
     //returns whether a triangle within the radius of this ripple
     inRange(triangle){
-        //TODO(justas):Account for the triangle coordinates
-        // being at the edge of the triangle
-        return (this.radius >= Math.sqrt((triangle.x - this.x)*(triangle.x - this.x) + 
-                                    (triangle.y - this.y)*(triangle.y - this.y)));
+        //Accounting for the triangle coordinates
+        // being at the edge of the triangle and centering them
+        let tX = triangle.x + (sideLength/2);
+        let tY = triangle.y + (sideLength*Math.sqrt(3)/6);
+
+        return (this.radius >= Math.sqrt((tX - this.x)*(tX - this.x) + 
+                                    (tY - this.y)*(tY - this.y)));
     }
 
     update(){
@@ -106,24 +106,45 @@ class Ripple {
 
 //The triangle class
 class Triangle {
-    constructor(x, y, thickness, targetThickness, cornerRadius, opacity, color){
+    constructor(x, y, thickness, targetThickness, opacity, color){
         this.x = x;
         this.y = y;
         this.thickness = thickness;
         this.targetThickness = targetThickness;
-        this.cornerRadius = cornerRadius;
         this.opacity = opacity;
         this.color = color;
     }
 
-    //Drawing the triangle on the canvas
-    render(){
+    //Drawing the triangle on the canvas, takes an index in the matrix array
+    render(i){
+
+        let path = new Path2D();
+
+        //tr = translated coordinates in the triangle Matrix
+        let trX = i % xT;
+        let trY = i / xT;
+
+        //NOTE(justas): Switch the === for a != if you want to inverse the triangle orientations
+        if((trY*xT)%2 * trX%2 === 0){ //draw flipped (pointing up)
+            //path.moveTo(0, 0);
+        }
+        else{ //draw unflipped (pointing down)
+            path.moveTo(x + Math.sqrt(3)*borderRadius + (3/Math.sqrt(3)*inset), y + inset);
+
+            path.arcTo(x + sideLength - (3/Math.sqrt(3)*inset), y + inset,
+                       x + sideLength - (3/Math.sqrt(3)*inset) - borderRadius, y + inset + 2*Math.sqrt(3)*borderRadius,
+                       borderRadius);
+            path.arcTo(x + sideLength/2, y + Math.sqrt(3)*sideLength - 2*inset,
+                       x + sideLength/2 - borderRadius, y + Math.sqrt(3)*sideLength - 2*inset - 2*Math.sqrt(3)*borderRadius,
+                       borderRadius);
+            path.arcTo(x + (3/Math.sqrt(3)*inset), y + inset,
+                       x + Math.sqrt(3)*borderRadius + (3/Math.sqrt(3)*inset), y + inset,
+                       borderRadius);
+        }
+
         ctx.lineWidth = this.thickness;
         ctx.strokeStyle = this.color;
 
-        //TODO(justas): Create a path using the rounded corners and arcs
-        //TODO(justas): Account for the flipping of the triangle and the height difference
-        let path = new Path2D();
         ctx.stroke(path);
     }
 
@@ -197,8 +218,8 @@ function init(){
 
     for(let i = 0; i < yT; i++){
         for(let j = 0; j < xT; j++){
-            let x = j * (sideLength/2);
-            let y = i * (sideLength*Math.sqrt(3)/2);
+            let x = j * (sideLength/2) + paddingLeft;
+            let y = i * (sideLength*Math.sqrt(3)/2) + paddingTop;
 
             //TODO(justas): Perhaps make use of the construction with a different thickness value
             // to achieve a beautiful booting up animation?
@@ -210,12 +231,12 @@ function init(){
 function animate(){
     requestAnimationFrame(animate);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    console.log(canvas.width + "x" + canvas.height);
+    console.log(canvas.width + "x" + canvas.height); //Logging
 
-    for(let i = 0; i < triangleMatrix.length; i++){
-        triangleMatrix[i].update();
-        triangleMatrix[i].draw();
-    }
+    triangleMatrix.forEach(function(t, i) {
+        t.update();
+        t.render(i);
+    });
 
     ripples.forEach(function(r) {
         r.update();
