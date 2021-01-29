@@ -211,6 +211,7 @@ function init(){
 function animate(){
     requestAnimationFrame(animate);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    console.log(canvas.width + "x" + canvas.height);
 
     triangleMatrix.forEach(triangle => {
         triangle.update();
