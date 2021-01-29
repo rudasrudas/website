@@ -46,8 +46,8 @@ const refreshSpeed = 0.5;
 const rippleSpeed = 20; //The speed at which the ripples move away from their source in px
 
 const defaultTargetThickness = 2; //The default target thickness for all triangles in px
-const defaultTriangleColor = "#555555"; //The default color for triangles.
-const borderRadius = 5; //triangle border radius
+const defaultTriangleColor = '#555555'; //The default color for triangles.
+const borderRadius = 0; //triangle border radius
 const inset = 5; //The inset/padding for each triangle in px
 
 //VARIABLES
@@ -103,13 +103,13 @@ class Ripple {
 
 //The triangle class
 class Triangle {
-    constructor(x, y, thickness, targetThickness, opacity, color){
+    constructor(x, y, thickness, targetThickness, opacity){
         this.x = x;
         this.y = y;
         this.thickness = thickness;
         this.targetThickness = targetThickness;
         this.opacity = opacity;
-        this.color = color;
+        this.color = defaultTriangleColor;
     }
 
     //Drawing the triangle on the canvas, takes an index in the matrix array
@@ -124,8 +124,8 @@ class Triangle {
         let path = new Path2D();
 
         //NOTE(justas): Switch the === for a != if you want to inverse the triangle orientations
-        if((trY*xT)%2 * trX%2 === 0){ //draw flipped (pointing up)
-            path.moveTo(this.x + (3/Math.sqrt(3)*inset), 0);
+        if((trY*xT)%2 === 0){ //draw flipped (pointing up)
+            //path.moveTo(this.x + (3/Math.sqrt(3)*inset), 0);
         }
         else{ //draw unflipped (pointing down)
             path.moveTo(this.x + Math.sqrt(3)*borderRadius + (3/Math.sqrt(3)*inset), this.y + inset);
@@ -133,8 +133,8 @@ class Triangle {
             path.arcTo( this.x + sideLength - (3/Math.sqrt(3)*inset), this.y + inset,
                         this.x + sideLength - (3/Math.sqrt(3)*inset) - borderRadius, this.y + inset + 2*Math.sqrt(3)*borderRadius,
                         borderRadius);
-            path.arcTo( this.x + sideLength/2, this.y + Math.sqrt(3)*sideLength - 2*inset,
-                        this.x + sideLength/2 - borderRadius, this.y + Math.sqrt(3)*sideLength - 2*inset - 2*Math.sqrt(3)*borderRadius,
+            path.arcTo( this.x + sideLength/2, this.y + Math.sqrt(3)*sideLength/2 - 2*inset,
+                        this.x + sideLength/2 - borderRadius, this.y + Math.sqrt(3)*sideLength/2 - 2*inset - 2*Math.sqrt(3)*borderRadius,
                         borderRadius);
             path.arcTo( this.x + (3/Math.sqrt(3)*inset), this.y + inset,
                         this.x + Math.sqrt(3)*borderRadius + (3/Math.sqrt(3)*inset), this.y + inset,
@@ -202,10 +202,10 @@ function init(){
 
     console.log(canvas.width + "x" + canvas.height); //Logging
 
-    sideLength = 40;//canvas.width*canvas.width / 600; // numOfPixelsOnCanvas / numOfTriangles
+    sideLength = 50;//canvas.width*canvas.width / 600; // numOfPixelsOnCanvas / numOfTriangles
 
     xT = Math.floor(canvas.width/(sideLength/2));
-    yt = 5;
+    yT = Math.floor(canvas.height/(sideLength*Math.sqrt(3)/2));
 
     for(let i = 0; i < yT; i++){
         for(let j = 0; j < xT; j++){
@@ -214,7 +214,9 @@ function init(){
 
             //TODO(justas): Perhaps make use of the construction with a different thickness value
             // to achieve a beautiful booting up animation?
-            triangleMatrix.push(new Triangle(x, y, defaultTargetThickness, defaultTargetThickness, 0, 1, defaultTriangleColor));
+            triangleMatrix.push(
+                new Triangle(x, y, defaultTargetThickness, defaultTargetThickness, 0, 1)
+            );
         }
     }
 }
@@ -236,6 +238,7 @@ function animate(){
 init();
 console.log("There are " + triangleMatrix.length + " triangles created. \n xT = " + xT + " yT = " + yT);
 console.log("canvas dims: " + canvas.width + ";" + canvas.height);
+console.log("sidelength: " + sideLength);
 animate();
 
 
