@@ -134,8 +134,8 @@ class Triangle {
 
     update(){
         //Iterating trough every ripple and making the triangles disappear
-        ripples.forEach(function(ripple) {
-            if(ripple.inRange(this)){
+        ripples.forEach(function(rirpple) {
+            if(r.inRange(this)){
                 this.targetThickness = 0;
             }
         });
@@ -213,13 +213,13 @@ function animate(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     console.log(canvas.width + "x" + canvas.height);
 
-    triangleMatrix.forEach(function(triangle) {
-        triangle.update();
-        triangle.draw();
+    triangleMatrix.forEach(function(t) {
+        t.update();
+        t.draw();
     });
 
-    ripples.forEach(function(ripple) {
-        ripple.update();
+    ripples.forEach(function(r) {
+        r.update();
     });
 }
 
