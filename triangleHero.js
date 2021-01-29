@@ -34,18 +34,18 @@ const elementId = "canvas1";
 const triangleDensity = 20; 
 
 //The padding around the hero section in px.
-const paddingTop = 0;
-const paddingBottom = 0;
+const paddingTop = 20;
+const paddingBottom = 20;
 const paddingLeft = 0;
-const paddingRight = 0; //TODO convert into a struct istead
+const paddingRight = 100; //TODO convert into a struct istead
 
 const refreshSpeed = 0.1; //Speed at whcih the triangles reach their targetThickness (Keep as low as possible for accuracy)
 const rippleSpeed = 5; //The speed at which the ripples move away from their source in px per 10 ms
 
-const defaultTargetThickness = 4; //The default target thickness for all triangles in px
-const defaultTriangleColor = '#555555'; //The default color for triangles.
+const defaultTargetThickness = 2; //The default target thickness for all triangles in px
+const defaultTriangleColor = '#222'; //The default color for triangles.
 const borderRadius = 1; //triangle border radius
-const inset = 7; //The inset/padding for each triangle in px
+const inset = 6; //The inset/padding for each triangle in px
 
 //VARIABLES
 var canvas = document.getElementById(elementId);
@@ -243,7 +243,7 @@ function init(){
 
     console.log(canvas.width + "x" + canvas.height); //Logging
 
-    sideLength = canvas.width*canvas.width / 20000; // numOfPixelsOnCanvas / selectedValue
+    sideLength = canvas.width*canvas.height / 15000; // numOfPixelsOnCanvas / selectedValue
     
 
     xT = Math.floor(canvas.width/(sideLength/2))-1;
