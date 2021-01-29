@@ -34,9 +34,10 @@
 
 #canvas1 {
     top: 50px;
+    height: auto;
+    width: auto;
     left: 0;
-    width: 100%;
-    background: radial-gradient(#111111, #121212);
+    opacity: 100%;
 }
 
 #title {

@@ -34,10 +34,10 @@ const elementId = "canvas1";
 const triangleDensity = 20; 
 
 //The padding around the hero section in px.
-const paddingTop = 20;
-const paddingBottom = 20;
+const paddingTop = 0;
+const paddingBottom = 0;
 const paddingLeft = 0;
-const paddingRight = 100; //TODO convert into a struct istead
+const paddingRight = 0; //TODO convert into a struct istead
 
 const refreshSpeed = 0.1; //Speed at whcih the triangles reach their targetThickness (Keep as low as possible for accuracy)
 const rippleSpeed = 5; //The speed at which the ripples move away from their source in px per 10 ms
@@ -188,6 +188,13 @@ class Triangle {
         //TODO(justas): Update the opacity(or just the thickness?)
         // based on the scrolled position.
 
+        // if(150 > Math.sqrt((this.x - mouse.x)*(this.x - mouse.x) + (this.y - mouse.y)*(this.y - mouse.y))){
+        //     this.targetThickness = 5;
+        // }
+        // else{
+        //     this.targetThickness = defaultTargetThickness;
+        // }
+
         //Updating the true stroke thickness values 
         if(this.thickness > this.targetThickness){
             if(this.thickness - refreshSpeed >= 0){
@@ -210,8 +217,8 @@ window.addEventListener('mousemove',
         mouse.x = event.offsetX;
         mouse.y = event.offsetY;
 
-        //NOTE(justas): This is to only catch mouse moves
-        // while on the actual hero section.
+        //NOTE(justas): This is to catch mouse moves
+        // only while on the actual hero section.
         if(event.target.id != elementId){
             mouse.x = -500;
             mouse.y = -500;
@@ -237,17 +244,16 @@ function init(){
     triangleMatrix = [];
     ripples = [];
 
+    sideLength = 60;
+
     //Initializing the canvas width and height
-    canvas.width = screen.width - paddingLeft - paddingRight;
-    canvas.height = screen.height - paddingTop - paddingBottom;
+    canvas.width = window.innerWidth - paddingLeft - paddingRight;
+    canvas.height = window.innerHeight - paddingTop - paddingBottom;
 
     console.log(canvas.width + "x" + canvas.height); //Logging
 
-    sideLength = canvas.width*canvas.height / 15000; // numOfPixelsOnCanvas / selectedValue
-    
-
-    xT = Math.floor(canvas.width/(sideLength/2))-1;
-    yT = Math.floor(canvas.height/(sideLength*Math.sqrt(3)/2))-1;
+    xT = Math.floor(canvas.width/(sideLength/2)) - 1;
+    yT = Math.floor(canvas.height/(sideLength*Math.sqrt(3)/2)) - 1;
 
     for(let i = 0; i < yT; i++){
         for(let j = 0; j < xT; j++){
@@ -275,7 +281,6 @@ function animate(){
 
 init();
 console.log("There are " + triangleMatrix.length + " triangles created. \n xT = " + xT + " yT = " + yT);
-console.log("canvas dims: " + canvas.width + ";" + canvas.height);
 console.log("sidelength: " + sideLength);
 animate();
 
