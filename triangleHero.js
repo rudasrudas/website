@@ -10,8 +10,8 @@ End date: In progress
 
 Expected features:
  [ ] Displayed in a hexagonal pattern and not square
- [ ] Have margins on all sides
- [ ] Adapt triangle size based on the density value
+ [X] Have margins on all sides
+ [X] Adapt triangle size based on the density value
  [X] Disappear if clicked as a ripple
  [ ] Disappear/reapper on scroll
  [ ] Responsive to mouse hovering effects
@@ -124,9 +124,11 @@ class Triangle {
         let trX = i % xT;
         let trY = i / xT;
 
+        console.log("drawing the " + i + "th triangle. [" + trX + ";" + trY + "]");
+
         //NOTE(justas): Switch the === for a != if you want to inverse the triangle orientations
         if((trY*xT)%2 * trX%2 === 0){ //draw flipped (pointing up)
-            //path.moveTo(0, 0);
+            path.moveTo(x + (3/Math.sqrt(3)*inset), 0);
         }
         else{ //draw unflipped (pointing down)
             path.moveTo(x + Math.sqrt(3)*borderRadius + (3/Math.sqrt(3)*inset), y + inset);
