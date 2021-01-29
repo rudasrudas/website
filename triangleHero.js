@@ -134,7 +134,7 @@ class Triangle {
 
     update(){
         //Iterating trough every ripple and making the triangles disappear
-        ripples.forEach(ripple => {
+        ripples.forEach(function(ripple) {
             if(ripple.inRange(this)){
                 this.targetThickness = 0;
             }
