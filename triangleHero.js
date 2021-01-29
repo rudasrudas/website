@@ -43,28 +43,23 @@ const paddingBottom = 0;
 const paddingLeft = 0;
 const paddingRight = 0;
 
+const inset = 5; //The inset/padding for each triangle in px
+
 //The triangle matrix, as a one dimensional array
 var triangleMatrix;
 
 var xT; //Triangle amount in x axis
 var yT; //Triangle amount in y axis
-var gap; //The gap between triangles
 var sideLength; //The length of each side of the triangles
 
 //The speed at which the triangles will reach their target thickness
 //NOTE(justas): The bigger the value, the less accurate triangle
 //thickness is going to be.
 const refreshSpeed = 0.5;
+const rippleSpeed = 20; //The speed at which the ripples move away from their source in px
 
-//The speed at which the ripples move away from their source in px
-const rippleSpeed = 20;
-
-//The default target thickness for all triangles
-//not part of the graphics, in px
-const defaultTargetThickness = 2;
-
-//The default colour for triangles.
-const defaultTriangleColor = "#555555";
+const defaultTargetThickness = 2; //The default target thickness for all triangles in px
+const defaultTriangleColor = "#555555"; //The default color for triangles.
 
 //Mouse data
 var mouse = {
@@ -190,16 +185,20 @@ function init(){
     triangleMatrix = [];
     ripples = [];
 
-    //TODO(justas): initialize the canvas width and height!
+    //Initializing the canvas width and height
+    canvas.width = screen.width - paddingLeft - paddingRight;
+    canvas.height = screen.height - paddingTop - paddingBottom;
 
     //TODO(justas): calculate the number of triangles needed based on the density and the canvas dimensions.
-    xT = 10;
-    yT = 10;
+    sideLength = canvas.width*canvas.width / 600; // numOfPixelsOnCanvas / numOfTriangles
+
+    xT = Math.floor(canvas.width/(sideLength/2));
+    yt = Math.floor(canvas.height/(sideLength*Math.sqrt(3)/2));
 
     for(let i = 0; i < yT; i++){
         for(let j = 0; j < xT; j++){
-            let x = 0;
-            let y = 0;
+            let x = j * (sideLength/2);
+            let y = i * (sideLength*Math.sqrt(3)/2);
 
             //TODO(justas): Perhaps make use of the construction with a different thickness value
             // to achieve a beautiful booting up animation?
