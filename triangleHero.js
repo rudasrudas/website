@@ -39,8 +39,6 @@ const paddingBottom = 0;
 const paddingLeft = 0;
 const paddingRight = 0; //TODO convert into a struct istead
 
-
-
 //The speed at which the triangles will reach their target thickness
 //NOTE(justas): The bigger the value, the less accurate triangle
 //thickness is going to be.
@@ -75,10 +73,10 @@ var mouse = {
 const maximumDistance = Math.sqrt((screen.width*screen.width)+(screen.height*screen.height));
 
 class Ripple {
-    constructor(x, y, radius){
+    constructor(x, y){
         this.x = x;
         this.y = y;
-        this.radius = radius;
+        this.radius = 0;
     }
 
     //returns whether a triangle within the radius of this ripple
@@ -146,15 +144,14 @@ class Triangle {
 
         ctx.lineWidth = this.thickness;
         ctx.strokeStyle = this.color;
-
         ctx.stroke(path);
     }
 
     update(){
         //Iterating trough every ripple and making the triangles disappear
-        ripples.forEach(function(rirpple) {
+        ripples.forEach(function(r) {
             if(r.inRange(this)){
-                this.targetThickness = 0;
+                this.targetThickness = 0.001; //TODO(justas): A super small value or just 0?
             }
         });
 
@@ -191,15 +188,7 @@ window.addEventListener('mousedown',
     function(event){
         //NOTE(justas): Only capture clicks on the hero
         if(event.target.id === elementId){
-            //TODO(justas): implement the mouse clicking
-            // and adding to the array
-
-            var disappearingInterval = setInterval(() => {
-                //TODO(justas): make triangles disappear with
-                // a function here.
-            })
-
-            //TODO(justas): make use of a radius just like in the previous version
+            ripples.push(new Ripple(event.offsetX, event.offsetY));
         }
     }
 );
