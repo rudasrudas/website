@@ -114,7 +114,7 @@ class Triangle {
 
     //Drawing the triangle on the canvas, takes an index in the matrix array
     render(i){
-        
+
         //tr = translated coordinates in the triangle Matrix
         let trX = i % xT;
         let trY = i / xT;
@@ -234,6 +234,7 @@ function animate(){
 }
 
 init();
+console.log("There are " + triangleMatrix.length + " triangles created. \n xT = " + xT + " yT = " + yT);
 animate();
 
 
