@@ -202,10 +202,10 @@ function init(){
 
     console.log(canvas.width + "x" + canvas.height); //Logging
 
-    sideLength = canvas.width*canvas.width / 600; // numOfPixelsOnCanvas / numOfTriangles
+    sideLength = 40;//canvas.width*canvas.width / 600; // numOfPixelsOnCanvas / numOfTriangles
 
     xT = Math.floor(canvas.width/(sideLength/2));
-    yt = Math.floor(canvas.height/(sideLength*Math.sqrt(3)/2));
+    yt = 5;
 
     for(let i = 0; i < yT; i++){
         for(let j = 0; j < xT; j++){
