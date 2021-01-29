@@ -42,10 +42,10 @@ const paddingRight = 0; //TODO convert into a struct istead
 const refreshSpeed = 0.1; //Speed at whcih the triangles reach their targetThickness (Keep as low as possible for accuracy)
 const rippleSpeed = 5; //The speed at which the ripples move away from their source in px per 10 ms
 
-const defaultTargetThickness = 1; //The default target thickness for all triangles in px
+const defaultTargetThickness = 4; //The default target thickness for all triangles in px
 const defaultTriangleColor = '#555555'; //The default color for triangles.
-const borderRadius = 5; //triangle border radius
-const inset = 10; //The inset/padding for each triangle in px
+const borderRadius = 1; //triangle border radius
+const inset = 7; //The inset/padding for each triangle in px
 
 //VARIABLES
 var canvas = document.getElementById(elementId);
@@ -111,7 +111,7 @@ class Triangle {
         ctx.lineWidth = this.thickness;
         ctx.strokeStyle = this.color;
 
-        if(xT%2 === 0){
+        if(trY%2 === 0){
             if(trX%2 === 0){
                 ctx.stroke(this.renderUp());
             }
@@ -120,21 +120,11 @@ class Triangle {
             }
         }
         else{
-            if(trY%2 === 0){
-                if(trX%2 === 0){
-                    ctx.stroke(this.renderUp());
-                }
-                else{
-                    ctx.stroke(this.renderDown());
-                }
+            if(trX%2 === 0){
+                ctx.stroke(this.renderDown());
             }
             else{
-                if(trX%2 === 0){
-                    ctx.stroke(this.renderDown());
-                }
-                else{
-                    ctx.stroke(this.renderUp());
-                }
+                ctx.stroke(this.renderUp());
             }
         }
     }
@@ -191,7 +181,7 @@ class Triangle {
         //Iterating trough every ripple and making the triangles fade
         for(let i = 0; i < ripples.length; i++){
             if(this.inRange(ripples[i])){
-                this.targetThickness = 0.0001; //TODO(justas): A super small value or just 0?
+                this.targetThickness = 0.001; //TODO(justas): A super small value or just 0?
             }
         }
 
@@ -200,7 +190,12 @@ class Triangle {
 
         //Updating the true stroke thickness values 
         if(this.thickness > this.targetThickness){
-            this.thickness -= refreshSpeed;
+            if(this.thickness - refreshSpeed >= 0){
+                this.thickness -= refreshSpeed;
+            }
+            else{
+                this.thickness = this.targetThickness;
+            }
         }
         else{
             this.thickness += refreshSpeed;
@@ -248,10 +243,11 @@ function init(){
 
     console.log(canvas.width + "x" + canvas.height); //Logging
 
-    sideLength = canvas.width*canvas.width / 15000; // numOfPixelsOnCanvas / numOfTriangles
+    sideLength = canvas.width*canvas.width / 20000; // numOfPixelsOnCanvas / selectedValue
+    
 
-    xT = Math.floor(canvas.width/(sideLength/2));
-    yT = Math.floor(canvas.height/(sideLength*Math.sqrt(3)/2));
+    xT = Math.floor(canvas.width/(sideLength/2))-1;
+    yT = Math.floor(canvas.height/(sideLength*Math.sqrt(3)/2))-1;
 
     for(let i = 0; i < yT; i++){
         for(let j = 0; j < xT; j++){
