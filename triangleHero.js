@@ -86,13 +86,12 @@ class Ripple {
         let tX = triangle.x + (sideLength/2);
         let tY = triangle.y + (sideLength*Math.sqrt(3)/6);
 
-        return (this.radius >= Math.sqrt((tX - this.x)*(tX - this.x) + 
-                                    (tY - this.y)*(tY - this.y)));
+        return (this.radius >= Math.sqrt((tX - this.x)*(tX - this.x) + (tY - this.y)*(tY - this.y)));
     }
 
     update(){
-        if(radius < maximumDistance){
-            radius += rippleSpeed;
+        if(this.radius < maximumDistance){
+            this.radius += rippleSpeed;
         }
         else{
             ripples.pop(this); //Delete the ripple if it is irrelevant
@@ -115,31 +114,31 @@ class Triangle {
 
     //Drawing the triangle on the canvas, takes an index in the matrix array
     render(i){
-
-        let path = new Path2D();
-
+        
         //tr = translated coordinates in the triangle Matrix
         let trX = i % xT;
         let trY = i / xT;
 
         console.log("drawing the " + i + "th triangle. [" + trX + ";" + trY + "]");
 
+        let path = new Path2D();
+
         //NOTE(justas): Switch the === for a != if you want to inverse the triangle orientations
         if((trY*xT)%2 * trX%2 === 0){ //draw flipped (pointing up)
-            path.moveTo(x + (3/Math.sqrt(3)*inset), 0);
+            path.moveTo(this.x + (3/Math.sqrt(3)*inset), 0);
         }
         else{ //draw unflipped (pointing down)
-            path.moveTo(x + Math.sqrt(3)*borderRadius + (3/Math.sqrt(3)*inset), y + inset);
+            path.moveTo(this.x + Math.sqrt(3)*borderRadius + (3/Math.sqrt(3)*inset), this.y + inset);
 
-            path.arcTo(x + sideLength - (3/Math.sqrt(3)*inset), y + inset,
-                       x + sideLength - (3/Math.sqrt(3)*inset) - borderRadius, y + inset + 2*Math.sqrt(3)*borderRadius,
-                       borderRadius);
-            path.arcTo(x + sideLength/2, y + Math.sqrt(3)*sideLength - 2*inset,
-                       x + sideLength/2 - borderRadius, y + Math.sqrt(3)*sideLength - 2*inset - 2*Math.sqrt(3)*borderRadius,
-                       borderRadius);
-            path.arcTo(x + (3/Math.sqrt(3)*inset), y + inset,
-                       x + Math.sqrt(3)*borderRadius + (3/Math.sqrt(3)*inset), y + inset,
-                       borderRadius);
+            path.arcTo( this.x + sideLength - (3/Math.sqrt(3)*inset), this.y + inset,
+                        this.x + sideLength - (3/Math.sqrt(3)*inset) - borderRadius, this.y + inset + 2*Math.sqrt(3)*borderRadius,
+                        borderRadius);
+            path.arcTo( this.x + sideLength/2, this.y + Math.sqrt(3)*sideLength - 2*inset,
+                        this.x + sideLength/2 - borderRadius, this.y + Math.sqrt(3)*sideLength - 2*inset - 2*Math.sqrt(3)*borderRadius,
+                        borderRadius);
+            path.arcTo( this.x + (3/Math.sqrt(3)*inset), this.y + inset,
+                        this.x + Math.sqrt(3)*borderRadius + (3/Math.sqrt(3)*inset), this.y + inset,
+                        borderRadius);
         }
 
         ctx.lineWidth = this.thickness;
@@ -203,7 +202,6 @@ function init(){
 
     console.log(canvas.width + "x" + canvas.height); //Logging
 
-    //TODO(justas): calculate the number of triangles needed based on the density and the canvas dimensions.
     sideLength = canvas.width*canvas.width / 600; // numOfPixelsOnCanvas / numOfTriangles
 
     xT = Math.floor(canvas.width/(sideLength/2));
