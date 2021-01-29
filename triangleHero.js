@@ -9,9 +9,9 @@ Start date: 2021/01/26
 End date: In progress
 
 Expected features:
- [ ] Displayed in a hexagonal pattern and not square
+ [X] Displayed in a hexagonal pattern and not square
  [X] Have margins on all sides
- [X] Adapt triangle size based on the density value
+ [ ] Adapt triangle size based on the density value
  [X] Disappear if clicked as a ripple
  [ ] Disappear/reapper on scroll
  [ ] Responsive to mouse hovering effects
@@ -116,34 +116,85 @@ class Triangle {
     render(i){
 
         //tr = translated coordinates in the triangle Matrix
-        let trX = i % xT;
-        let trY = i / xT;
+        let trX = Math.floor(i % xT);
+        let trY = Math.floor(i / xT);
 
         console.log("drawing the " + i + "th triangle. [" + trX + ";" + trY + "]");
 
-        let path = new Path2D();
-
-        //NOTE(justas): Switch the === for a != if you want to inverse the triangle orientations
-        if((trY*xT)%2 === 0){ //draw flipped (pointing up)
-            //path.moveTo(this.x + (3/Math.sqrt(3)*inset), 0);
-        }
-        else{ //draw unflipped (pointing down)
-            path.moveTo(this.x + Math.sqrt(3)*borderRadius + (3/Math.sqrt(3)*inset), this.y + inset);
-
-            path.arcTo( this.x + sideLength - (3/Math.sqrt(3)*inset), this.y + inset,
-                        this.x + sideLength - (3/Math.sqrt(3)*inset) - borderRadius, this.y + inset + 2*Math.sqrt(3)*borderRadius,
-                        borderRadius);
-            path.arcTo( this.x + sideLength/2, this.y + Math.sqrt(3)*sideLength/2 - 2*inset,
-                        this.x + sideLength/2 - borderRadius, this.y + Math.sqrt(3)*sideLength/2 - 2*inset - 2*Math.sqrt(3)*borderRadius,
-                        borderRadius);
-            path.arcTo( this.x + (3/Math.sqrt(3)*inset), this.y + inset,
-                        this.x + Math.sqrt(3)*borderRadius + (3/Math.sqrt(3)*inset), this.y + inset,
-                        borderRadius);
-        }
-
         ctx.lineWidth = this.thickness;
         ctx.strokeStyle = this.color;
-        ctx.stroke(path);
+
+        // if((trY*xT)%2 === 0){ //draw flipped (pointing up)
+        //     //path.moveTo(this.x + (3/Math.sqrt(3)*inset), 0);
+        // }
+        // else{ //draw unflipped (pointing down)
+        //     ctx.stroke(this.renderDown());
+        // }
+
+        if(xT%2 === 0){
+            if(trX%2 === 0){
+                ctx.stroke(this.renderUp());
+            }
+            else{
+                ctx.stroke(this.renderDown());
+            }
+        }
+        else{
+            if(trY%2 === 0){
+                if(trX%2 === 0){
+                    ctx.stroke(this.renderUp());
+                }
+                else{
+                    ctx.stroke(this.renderDown());
+                }
+            }
+            else{
+                if(trX%2 === 0){
+                    ctx.stroke(this.renderDown());
+                }
+                else{
+                    ctx.stroke(this.renderUp());
+                }
+            }
+        }
+    }
+
+    renderDown(){
+        let path = new Path2D();
+
+        path.moveTo(this.x + Math.sqrt(3)*borderRadius + (3/Math.sqrt(3)*inset),
+                    this.y + inset);
+
+        path.arcTo( this.x + sideLength - (3/Math.sqrt(3)*inset), this.y + inset,
+                    this.x + sideLength - (3/Math.sqrt(3)*inset) - borderRadius, this.y + inset + 2*Math.sqrt(3)*borderRadius,
+                    borderRadius);
+        path.arcTo( this.x + sideLength/2, this.y + Math.sqrt(3)*sideLength/2 - 2*inset,
+                    this.x + sideLength/2 - borderRadius, this.y + Math.sqrt(3)*sideLength/2 - 2*inset - 2*Math.sqrt(3)*borderRadius,
+                    borderRadius);
+        path.arcTo( this.x + (3/Math.sqrt(3)*inset), this.y + inset,
+                    this.x + Math.sqrt(3)*borderRadius + (3/Math.sqrt(3)*inset), this.y + inset,
+                    borderRadius);
+
+        return path;
+    }
+
+    renderUp(){
+        let path = new Path2D();
+
+        path.moveTo(this.x + (3/Math.sqrt(3)*inset) + borderRadius,
+                    this.y + Math.sqrt(3)*sideLength/2 - inset - 2*Math.sqrt(3)*borderRadius);
+
+        path.arcTo( this.x + sideLength/2, this.y + 2*inset,
+                    this.x + sideLength/2 + borderRadius, this.y + 2*inset + 2*Math.sqrt(3)*borderRadius,
+                    borderRadius);
+        path.arcTo( this.x + sideLength - (3/Math.sqrt(3)*inset), this.y + Math.sqrt(3)*sideLength/2 - inset,
+                    this.x + sideLength - (3/Math.sqrt(3)*inset) - 2*Math.sqrt(3)*borderRadius, this.y + Math.sqrt(3)*sideLength/2 - inset,
+                    borderRadius);
+        path.arcTo( this.x + (3/Math.sqrt(3)*inset), this.y + Math.sqrt(3)*sideLength/2 - inset,
+                    this.x + (3/Math.sqrt(3)*inset) + borderRadius, this.y + Math.sqrt(3)*sideLength/2 - inset - 2*Math.sqrt(3)*borderRadius,
+                    borderRadius);
+
+        return path;
     }
 
     update(){
@@ -202,7 +253,7 @@ function init(){
 
     console.log(canvas.width + "x" + canvas.height); //Logging
 
-    sideLength = 50;//canvas.width*canvas.width / 600; // numOfPixelsOnCanvas / numOfTriangles
+    sideLength = canvas.width*canvas.width / 15000; // numOfPixelsOnCanvas / numOfTriangles
 
     xT = Math.floor(canvas.width/(sideLength/2));
     yT = Math.floor(canvas.height/(sideLength*Math.sqrt(3)/2));
@@ -226,7 +277,7 @@ function animate(){
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     triangleMatrix.forEach(function(t, i) {
-        t.update();
+        //t.update();
         t.render(i);
     });
 
