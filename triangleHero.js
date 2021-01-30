@@ -14,7 +14,7 @@ Expected features:
  [ ] Have margins on all sides
  [ ] Adapt triangle size based on the density value
  [ ] Disappear/reapper on scroll
- [ ] Responsive to mouse hovering effects
+ [X] Responsive to mouse hovering effects
  [ ] Display a picture or a video with value customization
 
  Expected triangle settings:
@@ -34,13 +34,13 @@ const elementId = "canvas1";
 const triangleDensity = 20; 
 
 //The padding around the hero section in px.
-const paddingTop = 0;
-const paddingBottom = 0;
-const paddingLeft = 0;
-const paddingRight = 0; //TODO convert into a struct istead
+const paddingTop = 90;
+const paddingBottom = 50;
+const paddingLeft = 150;
+const paddingRight = 100; //TODO convert into a struct istead
 
 const refreshSpeed = 0.1; //Speed at whcih the triangles reach their targetThickness (Keep as low as possible for accuracy)
-const rippleSpeed = 5; //The speed at which the ripples move away from their source in px per 10 ms
+const rippleSpeed = 15; //The speed at which the ripples move away from their source in px per 10 ms
 
 const defaultTargetThickness = 2; //The default target thickness for all triangles in px
 const defaultTriangleColor = '#222'; //The default color for triangles.
@@ -63,6 +63,8 @@ var mouse = {
     x: -500, //NOTE(justas): the negative values are to prevent
     y: -500, // a fallback to the top right corner. Find out if
              // it can be done otherwise.
+    radius: 250, //radius for responsive mouse interaction
+    lift: -2     //the maximum thickness difference between a triangle interacted with and baseThickness
 }
 
 //The maximum distance between any two points on the canvas
@@ -99,6 +101,7 @@ class Triangle {
         this.targetThickness = targetThickness;
         this.opacity = opacity;
         this.color = defaultTriangleColor;
+        this.isFading = false;
     }
 
     //Drawing the triangle on the canvas, takes an index in the matrix array
@@ -181,6 +184,7 @@ class Triangle {
         //Iterating trough every ripple and making the triangles fade
         for(let i = 0; i < ripples.length; i++){
             if(this.inRange(ripples[i])){
+                this.isFading = true;
                 this.targetThickness = 0.001; //TODO(justas): A super small value or just 0?
             }
         }
@@ -188,12 +192,16 @@ class Triangle {
         //TODO(justas): Update the opacity(or just the thickness?)
         // based on the scrolled position.
 
-        // if(150 > Math.sqrt((this.x - mouse.x)*(this.x - mouse.x) + (this.y - mouse.y)*(this.y - mouse.y))){
-        //     this.targetThickness = 5;
-        // }
-        // else{
-        //     this.targetThickness = defaultTargetThickness;
-        // }
+        //Mouse responsiveness
+        let distanceToMouse = Math.sqrt((this.x - mouse.x)*(this.x - mouse.x) + (this.y - mouse.y)*(this.y - mouse.y));
+        if(!this.isFading){
+            if(mouse.radius > distanceToMouse){
+                this.targetThickness = (Math.cos(distanceToMouse*Math.PI/mouse.radius) + 1)/2*mouse.lift + defaultTargetThickness;
+            }
+            else{
+                this.targetThickness = defaultTargetThickness;
+            }
+        }
 
         //Updating the true stroke thickness values 
         if(this.thickness > this.targetThickness){
@@ -247,13 +255,13 @@ function init(){
     sideLength = 60;
 
     //Initializing the canvas width and height
-    canvas.width = window.innerWidth - paddingLeft - paddingRight;
-    canvas.height = window.innerHeight - paddingTop - paddingBottom;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
     console.log(canvas.width + "x" + canvas.height); //Logging
 
-    xT = Math.floor(canvas.width/(sideLength/2)) - 1;
-    yT = Math.floor(canvas.height/(sideLength*Math.sqrt(3)/2)) - 1;
+    xT = Math.floor((canvas.width - paddingLeft - paddingRight)/(sideLength/2)) - 1;
+    yT = Math.floor((canvas.height - paddingTop - paddingBottom)/(sideLength*Math.sqrt(3)/2)) - 1;
 
     for(let i = 0; i < yT; i++){
         for(let j = 0; j < xT; j++){
