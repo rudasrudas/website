@@ -11,7 +11,8 @@ End date: In progress
 Expected features:
  [X] Displayed in a hexagonal pattern and not square
  [X] Disappear if clicked as a ripple
- [ ] Have margins on all sides
+ [ ] Disappear along the direction of one side of the triangles on click instead(?)
+ [X] Have padding on all sides
  [ ] Adapt triangle size based on the density value
  [ ] Disappear/reapper on scroll
  [X] Responsive to mouse hovering effects
@@ -28,16 +29,17 @@ Expected features:
  //CONSTANTS
 
 const elementId = "canvas1";
+const imageFileName = "cat.jpg";
 
 //The variable that determines how dense the triangle hero section will be
 //NOTE(justas): Not used yet and instead relying on canvas dimensions and sidelength to determine the density
 const triangleDensity = 20; 
 
 //The padding around the hero section in px.
-const paddingTop = 90;
-const paddingBottom = 50;
-const paddingLeft = 150;
-const paddingRight = 100; //TODO convert into a struct istead
+const paddingTop = 10;
+const paddingBottom = 10;
+const paddingLeft = 10;
+const paddingRight = 10; //TODO convert into a struct istead
 
 const refreshSpeed = 0.1; //Speed at whcih the triangles reach their targetThickness (Keep as low as possible for accuracy)
 const rippleSpeed = 15; //The speed at which the ripples move away from their source in px per 10 ms
@@ -46,6 +48,10 @@ const defaultTargetThickness = 2; //The default target thickness for all triangl
 const defaultTriangleColor = '#222'; //The default color for triangles.
 const borderRadius = 1; //triangle border radius
 const inset = 6; //The inset/padding for each triangle in px
+
+const imgLift = 10; //How much the image values lift at max above defaultTargetThickness
+const imageTriangleOffsetX = 5;
+const imageTriangleOffsetY = 0;
 
 //VARIABLES
 var canvas = document.getElementById(elementId);
@@ -64,8 +70,10 @@ var mouse = {
     y: -500, // a fallback to the top right corner. Find out if
              // it can be done otherwise.
     radius: 250, //radius for responsive mouse interaction
-    lift: -2     //the maximum thickness difference between a triangle interacted with and baseThickness
+    lift: -1     //the maximum thickness difference between a triangle interacted with and baseThickness
 }
+
+var img;
 
 //The maximum distance between any two points on the canvas
 //used to ensure good performance
@@ -248,6 +256,60 @@ window.addEventListener('mousedown',
     }
 );
 
+img = new Image();
+img.src = imageFileName;
+img.onload = function(){
+    var imgCanvas = document.createElement("canvas");
+    imgCanvas.width = img.width;
+    imgCanvas.height = img.height;
+    
+    var imgCtx = imgCanvas.getContext("2d");
+    imgCtx.drawImage(img, 0, 0);
+
+    var imgData = imgCtx.getImageData(0, 0, img.width, img.height);
+    renderImage(imgData);
+}
+
+function renderImage(imgData){
+
+    const density = 20;
+    const yDensity = sideLength/2*Math.sqrt(3)*density;
+    const xDensity = sideLength/2*density;
+
+    const imgYTriangles = Math.floor(imgData.height/yDensity);
+    const imgXTriangles = Math.floor(imgData.width/xDensity);
+
+    //In case the image renders outside of the matrix, prevent that
+    imgYTriangles = Math.min(imgYTriangles, yT - imageTriangleOffsetY);
+    imgXTriangles = Math.min(imgXTriangles, xT - imageTriangleOffsetX);
+
+    var mappedValues = [];
+
+    for(let i = 0; i < imgXTriangles*imgYTriangles; i++){
+        mappedValues.push(0); //Creating initial values
+    }
+
+    for(let i = 0; i < imgData.height; i++){
+        for(let j = 0; j < imgData.width; j++){
+            let y = i%yDensity;
+            let x = j%xDensity; //NOTE(justas): there may be an error here if the offsets are too high
+
+            let index = (i * imgData.width + j) * 4;
+            let avg = (imgData.data[index] + imgData.data[index + 1] + imgData.data[index + 2])/3/255;
+
+            mappedValues[y * imgXTriangles + x] += avg;
+        }
+    }
+
+    for(let i = 0; i < imgYTriangles; i++){
+        for(let j = 0; j < imgXTriangles; j++){
+            triangleMatrix[ (imageTriangleOffsetY + i) * imgXTriangles + 
+                            (imageTriangleOffsetX + j) + i*(xT - imgXTriangles)].targetThickness = 
+                            mappedValues[i * imgXTriangles + j]/(xDensity*yDensity) * imgLift;
+        }
+    }
+}
+
 function init(){
     triangleMatrix = [];
     ripples = [];
@@ -266,7 +328,7 @@ function init(){
     for(let i = 0; i < yT; i++){
         for(let j = 0; j < xT; j++){
             let x = j * (sideLength/2) + paddingLeft;
-            let y = i * (sideLength*Math.sqrt(3)/2) + paddingTop;
+            let y = i * (sideLength/2*Math.sqrt(3)) + paddingTop;
 
             //TODO(justas): Perhaps make use of the construction with a different thickness value
             // to achieve a beautiful booting up animation?
