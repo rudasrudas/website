@@ -268,6 +268,7 @@ img.onload = function(){
 
     var imgData = imgCtx.getImageData(0, 0, img.width, img.height);
     renderImage(imgData);
+    console.log("Image rendered");
 }
 
 function renderImage(imgData){
