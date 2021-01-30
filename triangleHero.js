@@ -13,7 +13,7 @@ Expected features:
  [X] Disappear if clicked as a ripple
  [ ] Disappear along the direction of one side of the triangles on click instead(?)
  [X] Have padding on all sides
- [ ] Adapt triangle size based on the density value
+ [X] Adapt triangle size based on the density value
  [ ] Disappear/reapper on scroll
  [X] Responsive to mouse hovering effects
  [ ] Display a picture or a video with value customization
@@ -46,7 +46,7 @@ const rippleSpeed = 15; //The speed at which the ripples move away from their so
 
 const defaultTargetThickness = 2; //The default target thickness for all triangles in px
 const defaultTriangleColor = '#aaa'; //The default color for triangles.
-const defaultInset = 6; //The inset/padding for each triangle in px
+const defaultInset = 10; //The inset/padding for each triangle in px
 const borderRadius = 5; //triangle border radius
 
 const imgLift = 50; //How much the image values lift at max above defaultTargetThickness
@@ -149,8 +149,8 @@ class Triangle {
         //ctx.clip(path);
 
         var gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-        gradient.addColorStop(0, '#333');
-        gradient.addColorStop(1, '#222');
+        gradient.addColorStop(0, '#151515');
+        gradient.addColorStop(1, '#191919');
         ctx.fillStyle = gradient;
         ctx.fill(path);
     }
@@ -222,7 +222,7 @@ class Triangle {
         if(!this.isFading){
             if(mouse.radius > distanceToMouse){
                 this.targetThickness = (Math.cos(distanceToMouse*Math.PI/mouse.radius) + 1)/2*mouse.lift + defaultTargetThickness;
-                this.inset = 15/this.targetThickness;
+                this.inset = this.targetThickness * 5;
             }
             else{
                 this.targetThickness = defaultTargetThickness;
@@ -357,7 +357,7 @@ function init(){
             //TODO(justas): Perhaps make use of the construction with a different thickness value
             // to achieve a beautiful booting up animation?
             triangleMatrix.push(
-                new Triangle(x, y, defaultTargetThickness, defaultTargetThickness, 0, 1)
+                new Triangle(x, y, defaultTargetThickness, defaultTargetThickness, 1, defaultInset)
             );
         }
     }
