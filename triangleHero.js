@@ -49,7 +49,7 @@ const defaultTriangleColor = '#222'; //The default color for triangles.
 const borderRadius = 1; //triangle border radius
 const inset = 6; //The inset/padding for each triangle in px
 
-const imgLift = 10; //How much the image values lift at max above defaultTargetThickness
+const imgLift = 50; //How much the image values lift at max above defaultTargetThickness
 const imageTriangleOffsetX = 5;
 const imageTriangleOffsetY = 0;
 
