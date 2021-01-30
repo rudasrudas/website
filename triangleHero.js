@@ -262,11 +262,12 @@ img.onload = function(){
     var imgCanvas = document.createElement("canvas");
     imgCanvas.width = img.width;
     imgCanvas.height = img.height;
-    
+    console.log("Image not rendered yet");
     var imgCtx = imgCanvas.getContext("2d");
     imgCtx.drawImage(img, 0, 0);
-
+    console.log("Image not rendered ye 2t");
     var imgData = imgCtx.getImageData(0, 0, img.width, img.height);
+    console.log("Image not rendered ye 3t");
     renderImage(imgData);
     console.log("Image rendered");
 }
