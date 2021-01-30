@@ -45,9 +45,9 @@ const refreshSpeed = 0.1; //Speed at whcih the triangles reach their targetThick
 const rippleSpeed = 15; //The speed at which the ripples move away from their source in px per 10 ms
 
 const defaultTargetThickness = 2; //The default target thickness for all triangles in px
-const defaultTriangleColor = '#222'; //The default color for triangles.
-const borderRadius = 1; //triangle border radius
-const inset = 6; //The inset/padding for each triangle in px
+const defaultTriangleColor = '#aaa'; //The default color for triangles.
+const defaultInset = 6; //The inset/padding for each triangle in px
+const borderRadius = 5; //triangle border radius
 
 const imgLift = 50; //How much the image values lift at max above defaultTargetThickness
 const imageTriangleOffsetX = 5;
@@ -56,6 +56,7 @@ const imageTriangleOffsetY = 0;
 //VARIABLES
 var canvas = document.getElementById(elementId);
 var ctx = canvas.getContext("2d");
+var globalPath;
 
 var triangleMatrix; //The triangle matrix, as a one dimensional array
 var ripples; //The ripple array
@@ -102,7 +103,7 @@ class Ripple {
 
 //The triangle class
 class Triangle {
-    constructor(x, y, thickness, targetThickness, opacity){
+    constructor(x, y, thickness, targetThickness, opacity, inset){
         this.x = x;
         this.y = y;
         this.thickness = thickness;
@@ -110,6 +111,7 @@ class Triangle {
         this.opacity = opacity;
         this.color = defaultTriangleColor;
         this.isFading = false;
+        this.inset = inset;
     }
 
     //Drawing the triangle on the canvas, takes an index in the matrix array
@@ -118,43 +120,57 @@ class Triangle {
         //tr = translated coordinates in the triangle Matrix
         let trX = Math.floor(i % xT);
         let trY = Math.floor(i / xT);
-
-        ctx.lineWidth = this.thickness;
-        ctx.strokeStyle = this.color;
+        let path;
 
         if(trY%2 === 0){
             if(trX%2 === 0){
-                ctx.stroke(this.renderUp());
+                path = this.renderUp();
             }
             else{
-                ctx.stroke(this.renderDown());
+                path = this.renderDown();
             }
         }
         else{
             if(trX%2 === 0){
-                ctx.stroke(this.renderDown());
+                path = this.renderDown();
             }
             else{
-                ctx.stroke(this.renderUp());
+                path = this.renderUp();
             }
         }
+
+        ctx.restore();
+
+        ctx.lineWidth = this.thickness;
+        ctx.strokeStyle = this.color;
+
+        //ctx.stroke(path);
+        
+        //ctx.clip(path);
+
+        var gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+        gradient.addColorStop(0, '#333');
+        gradient.addColorStop(1, '#222');
+        ctx.fillStyle = gradient;
+        ctx.fill(path);
     }
 
     renderDown(){ //Render the triangle pointing down
         let path = new Path2D();
 
-        path.moveTo(this.x + 3/Math.sqrt(3)*inset + Math.sqrt(3)*borderRadius,
-                    this.y + inset);
+        path.moveTo(this.x + 3/Math.sqrt(3)*this.inset + Math.sqrt(3)*borderRadius,
+                    this.y + this.inset);
 
-        path.arcTo( this.x + sideLength - 3/Math.sqrt(3)*inset, this.y + inset,
-                    this.x + sideLength - 3/Math.sqrt(3)*inset - Math.sqrt(3)*borderRadius, this.y + inset + 3*borderRadius,
+        path.arcTo( this.x + sideLength - 3/Math.sqrt(3)*this.inset, this.y + this.inset,
+                    this.x + sideLength - 3/Math.sqrt(3)*this.inset - Math.sqrt(3)*borderRadius, this.y + this.inset + 3*borderRadius,
                     borderRadius);
-        path.arcTo( this.x + sideLength/2, this.y + Math.sqrt(3)*sideLength/2 - 2*inset,
-                    this.x + sideLength/2 - Math.sqrt(3)*borderRadius, this.y + Math.sqrt(3)/2*sideLength - 2*inset - 3*borderRadius,
+        path.arcTo( this.x + sideLength/2, this.y + Math.sqrt(3)*sideLength/2 - 2*this.inset,
+                    this.x + sideLength/2 - Math.sqrt(3)*borderRadius, this.y + Math.sqrt(3)/2*sideLength - 2*this.inset - 3*borderRadius,
                     borderRadius);
-        path.arcTo( this.x + 3/Math.sqrt(3)*inset, this.y + inset,
-                    this.x + 3/Math.sqrt(3)*inset + Math.sqrt(3)*borderRadius, this.y + inset,
+        path.arcTo( this.x + 3/Math.sqrt(3)*this.inset, this.y + this.inset,
+                    this.x + 3/Math.sqrt(3)*this.inset + Math.sqrt(3)*borderRadius, this.y + this.inset,
                     borderRadius);
+        path.closePath();
 
         return path;
     }
@@ -162,18 +178,19 @@ class Triangle {
     renderUp(){ //Render the triangle pointing up
         let path = new Path2D();
 
-        path.moveTo(this.x + 3/Math.sqrt(3)*inset + Math.sqrt(3)/2*borderRadius,
-                    this.y + Math.sqrt(3)/2*sideLength - inset - 3/2*borderRadius);
+        path.moveTo(this.x + 3/Math.sqrt(3)*this.inset + Math.sqrt(3)/2*borderRadius,
+                    this.y + Math.sqrt(3)/2*sideLength - this.inset - 3/2*borderRadius);
 
-        path.arcTo( this.x + sideLength/2, this.y + 2*inset,
-                    this.x + sideLength/2 + Math.sqrt(3)*borderRadius, this.y + 2*inset + 3*borderRadius,
+        path.arcTo( this.x + sideLength/2, this.y + 2*this.inset,
+                    this.x + sideLength/2 + Math.sqrt(3)*borderRadius, this.y + 2*this.inset + 3*borderRadius,
                     borderRadius);
-        path.arcTo( this.x + sideLength - 3/Math.sqrt(3)*inset, this.y + Math.sqrt(3)*sideLength/2 - inset,
-                    this.x + sideLength - 3/Math.sqrt(3)*inset - 2*Math.sqrt(3)*borderRadius, this.y + Math.sqrt(3)*sideLength/2 - inset,
+        path.arcTo( this.x + sideLength - 3/Math.sqrt(3)*this.inset, this.y + Math.sqrt(3)*sideLength/2 - this.inset,
+                    this.x + sideLength - 3/Math.sqrt(3)*this.inset - 2*Math.sqrt(3)*borderRadius, this.y + Math.sqrt(3)*sideLength/2 - this.inset,
                     borderRadius);
-        path.arcTo( this.x + 3/Math.sqrt(3)*inset, this.y + Math.sqrt(3)*sideLength/2 - inset,
-                    this.x + 3/Math.sqrt(3)*inset + Math.sqrt(3)/2*borderRadius, this.y + Math.sqrt(3)/2*sideLength - inset - 3/2*borderRadius,
+        path.arcTo( this.x + 3/Math.sqrt(3)*this.inset, this.y + Math.sqrt(3)*sideLength/2 - this.inset,
+                    this.x + 3/Math.sqrt(3)*this.inset + Math.sqrt(3)/2*borderRadius, this.y + Math.sqrt(3)/2*sideLength - this.inset - 3/2*borderRadius,
                     borderRadius);
+        path.closePath();
 
         return path;
     }
@@ -205,9 +222,11 @@ class Triangle {
         if(!this.isFading){
             if(mouse.radius > distanceToMouse){
                 this.targetThickness = (Math.cos(distanceToMouse*Math.PI/mouse.radius) + 1)/2*mouse.lift + defaultTargetThickness;
+                this.inset = 15/this.targetThickness;
             }
             else{
                 this.targetThickness = defaultTargetThickness;
+                this.inset = defaultInset;
             }
         }
 
@@ -257,7 +276,7 @@ window.addEventListener('mousedown',
 );
 
 img = new Image();
-img.src = imageFileName;
+//img.src = imageFileName;
 img.onload = function(){
     var imgCanvas = document.createElement("canvas");
     imgCanvas.width = img.width;
@@ -348,6 +367,8 @@ function animate(){
     requestAnimationFrame(animate);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
+    ctx.save();
+
     triangleMatrix.forEach(function(t, i) {
         t.update();
         t.render(i);
