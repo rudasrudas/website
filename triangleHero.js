@@ -276,8 +276,8 @@ function renderImage(imgData){
     const yDensity = sideLength/2*Math.sqrt(3)*density;
     const xDensity = sideLength/2*density;
 
-    const imgYTriangles = Math.floor(imgData.height/yDensity);
-    const imgXTriangles = Math.floor(imgData.width/xDensity);
+    var imgYTriangles = Math.floor(imgData.height/yDensity);
+    var imgXTriangles = Math.floor(imgData.width/xDensity);
 
     //In case the image renders outside of the matrix, prevent that
     imgYTriangles = Math.min(imgYTriangles, yT - imageTriangleOffsetY);
