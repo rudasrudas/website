@@ -262,14 +262,14 @@ img.onload = function(){
     var imgCanvas = document.createElement("canvas");
     imgCanvas.width = img.width;
     imgCanvas.height = img.height;
-    console.log("Image not rendered yet");
+
     var imgCtx = imgCanvas.getContext("2d");
     imgCtx.drawImage(img, 0, 0);
-    console.log("Image not rendered ye 2t");
+
     var imgData = imgCtx.getImageData(0, 0, img.width, img.height);
-    console.log("Image not rendered ye 3t");
+
     renderImage(imgData);
-    console.log("Image rendered");
+
 }
 
 function renderImage(imgData){
@@ -290,6 +290,8 @@ function renderImage(imgData){
     for(let i = 0; i < imgXTriangles*imgYTriangles; i++){
         mappedValues.push(0); //Creating initial values
     }
+
+    console.log(imgXTriangles + " " + imgYTriangles + " in total " + imgXTriangles*imgYTriangles);
 
     for(let i = 0; i < imgData.height; i++){
         for(let j = 0; j < imgData.width; j++){
