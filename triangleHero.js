@@ -305,7 +305,8 @@ function renderImage(imgData){
         for(let j = 0; j < imgXTriangles; j++){
             triangleMatrix[ (imageTriangleOffsetY + i) * imgXTriangles + 
                             (imageTriangleOffsetX + j) + i*(xT - imgXTriangles)].targetThickness = 
-                            mappedValues[i * imgXTriangles + j]/(xDensity*yDensity) * imgLift;
+                            mappedValues[i * imgXTriangles + j]/(imgXTriangles*imgYTriangles) * imgLift;
+            console.log(mappedValues[i * imgXTriangles + j]/(imgXTriangles*imgYTriangles) * imgLift);
         }
     }
 }
