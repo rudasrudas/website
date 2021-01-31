@@ -150,7 +150,7 @@ class Triangle {
 
         var gradient = ctx.createLinearGradient(canvas.width/3*2, 0, canvas.width, canvas.height);
         gradient.addColorStop(0, '#111111');
-        gradient.addColorStop(1, 'red');
+        gradient.addColorStop(1, 'magenta');
         ctx.fillStyle = gradient;
         ctx.fill(path);
     }
