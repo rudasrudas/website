@@ -148,9 +148,9 @@ class Triangle {
         
         //ctx.clip(path);
 
-        var gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-        gradient.addColorStop(0, '#151515');
-        gradient.addColorStop(1, '#191919');
+        var gradient = ctx.createLinearGradient(canvas.width/3*2, 0, canvas.width, canvas.height);
+        gradient.addColorStop(0, '#111111');
+        gradient.addColorStop(1, 'red');
         ctx.fillStyle = gradient;
         ctx.fill(path);
     }
@@ -361,6 +361,8 @@ function init(){
             );
         }
     }
+
+    window.addEventListener('resize', init);
 }
 
 function animate(){
