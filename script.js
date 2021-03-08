@@ -119,7 +119,7 @@ class Triangle {
     draw(){
         let p = new Path2D(`M${this.x} ${this.y} h ${this.sideLength} l ${-this.sideLength/2} ${this.sideLength*Math.sqrt(3)/2} Z`)
         ctx.lineWidth = this.thickness;
-        ctx.strokeStyle = '#444';
+        ctx.strokeStyle = '#a44';
         ctx.lineCap = "rounded";
         ctx.stroke(p);
     }
@@ -127,7 +127,7 @@ class Triangle {
     drawFlipped(){
         let p = new Path2D(`M${this.x} ${this.y + this.sideLength*Math.sqrt(3)/2} h ${this.sideLength} l ${-this.sideLength/2} ${-this.sideLength*Math.sqrt(3)/2} Z`)
         ctx.lineWidth = this.thickness;
-        ctx.strokeStyle = '#444';
+        ctx.strokeStyle = '#a44';
         ctx.lineCap = "rounded";
         ctx.stroke(p);
     }
